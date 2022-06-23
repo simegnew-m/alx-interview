@@ -1,61 +1,36 @@
 #!/usr/bin/python3
 """
-canUnlockAll module
+Module 0-lockboxes
 """
-
-open_pos = [0]
-status = False
-boxes_g = []
 
 
 def canUnlockAll(boxes):
     """
-    open a box of boxes
+    You have n number of locked boxes in front of you.
+    Each box is numbered sequentially from 0 to n - 1,
+    and each box may contain keys to the other boxes.
+    Determine if all the boxes can be opened.
     """
-    global status
-    global open_pos
-    global l
-    global pos
-    global boxes_g
-
-    if type(boxes) is not list:
+    if boxes is None:
         return False
-
-    boxes_g = boxes
-    open_pos = [0]
-    status = False
-    l = len(boxes_g)
-
-    if l == 0:
-        return False
-    if l == 1:
+    if len(boxes) == 1:
         return True
+    # Track the visited boxes
+    visited = set()
+    # The first box is unlocked
+    visited.add(0)
 
-    pos = list(range(0, l))
-    first_box = boxes[0]
+    # Use a stack to do a Depth First Search
+    stack = []
+    stack.append(0)
 
-    openBox(first_box)
-    return status
-
-
-def openBox(box):
-    """
-    open a box
-    """
-    global status
-    global open_pos
-    global l
-    global pos
-    global boxes_g
-    if type(box) is not list:
-        status = False
-        return False
-    for v in box:
-        if isinstance(v, int):
-            if v <= l-1:
-                if v not in open_pos:
-                    open_pos.append(v)
-                    if set(open_pos) == set(pos):
-                        status = True
-                        return True
-                    openBox(boxes_g[v])
+    while stack:
+        keys = boxes[stack.pop()]
+        for key in keys:
+            if key not in visited:
+                visited.add(key)
+                stack.append(key)
+    # All have been visited if the
+    # number of boxes is equal to the
+    # number of visited boxes
+    return len(boxes) == len(visited)
